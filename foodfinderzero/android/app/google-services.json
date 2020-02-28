@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "349465406934",
+    "firebase_url": "https://foodfinderzero.firebaseio.com",
+    "project_id": "foodfinderzero",
+    "storage_bucket": "foodfinderzero.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349465406934:android:56629d003b85a227",
+        "android_client_info": {
+          "package_name": "com.example.foodfinderzero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "349465406934-g4ci07eq1dask58ubpl4151v4ulhraou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodfinderzero",
+            "certificate_hash": "83bdd6fdbea04b2b080020aed7975d7915c42034"
+          }
+        },
+        {
+          "client_id": "349465406934-4p1o4o4mstmuqf1a6firp7jdrdkmo9i6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1wgWNdZ7lRldcCQ9jm1y2lx7WTx0cO78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "349465406934-4p1o4o4mstmuqf1a6firp7jdrdkmo9i6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "349465406934-4boc820f149sl97mds5v3dj6cjmf1qk0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodfinderzero"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
