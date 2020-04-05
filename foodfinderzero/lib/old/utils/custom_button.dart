@@ -53,6 +53,7 @@ class CustomButton extends StatelessWidget {
               10
             )
           ),
+          clipBehavior: Clip.antiAlias,
           color: Colors.transparent,
           child: new InkWell(
             onTap: onTap,

@@ -57,7 +57,7 @@ class MapViewState extends State<MapView> {
   @override 
   void initState() {
     super.initState();
-
+    isLoggedIn();
     ctrl.addListener(() {
       int next = ctrl.page.round();
 
@@ -111,10 +111,22 @@ class MapViewState extends State<MapView> {
     });
   }
 
+  bool loggedIn;
+  isLoggedIn() {
+    authService.isLoggedIn().then(
+      (result) {
+        setState(() {
+          loggedIn = result;
+        });
+      }
+    );
+  }
+
   String currentUser;
   getUserId() {
     authService.getUserId().then(
       (result) {
+        print(result);
         setState(() {
           currentUser = result;
         });
@@ -135,7 +147,8 @@ class MapViewState extends State<MapView> {
 
   double distance = 1.5;
   convertMilesToMeters(value) {
-    return value * 1609.34;
+    value = double.parse(value).round();
+    return value * 1609;
   }
 
   final primaryColor = new Color(0xFF1de9b6);
@@ -153,8 +166,8 @@ class MapViewState extends State<MapView> {
     Color backgroundColor = appState.getBackgroundColor();
 
     return new Material(
-          child: new Container(
-        clipBehavior: Clip.antiAlias,
+      child: new Container(
+        //clipBehavior: Clip.antiAlias,
         decoration: new BoxDecoration(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(
@@ -177,18 +190,30 @@ class MapViewState extends State<MapView> {
                 )
               ),
               constraints: BoxConstraints.expand(),
-              child: new GoogleMap(
-                compassEnabled: false,
-                myLocationButtonEnabled: false,
-                mapType: MapType.normal,
-                initialCameraPosition: currentLocation,
-                onMapCreated: (GoogleMapController controller) {
-                  mapController = controller;
-                    if (darkTheme) {
-                      mapController.setMapStyle(_darkMapStyle);
-                    }
-                },
-                markers: Set<Marker>.of(markers.values),
+              child: new Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(
+                    40
+                  ),
+                  bottomRight: Radius.circular(
+                    40
+                  )
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: new GoogleMap(
+                  compassEnabled: false,
+                  myLocationButtonEnabled: false,
+                  mapType: MapType.normal,
+                  initialCameraPosition: currentLocation,
+                  onMapCreated: (GoogleMapController controller) {
+                    mapController = controller;
+                      if (darkTheme) {
+                        mapController.setMapStyle(_darkMapStyle);
+                      }
+                  },
+                  markers: Set<Marker>.of(markers.values),
+                ),
               ),
             ),
             new Positioned(
@@ -351,7 +376,7 @@ class MapViewState extends State<MapView> {
                                 ),
                                 new CustomButton(
                                   externalPadding: EdgeInsets.symmetric(
-                                    vertical: 10,
+                                    vertical: 5,
                                     horizontal: 10
                                   ),
                                   buttonColor: primaryColor,
@@ -366,12 +391,15 @@ class MapViewState extends State<MapView> {
                                   labelColor: textColorOnPrimary,
                                   labelSize: 21,
                                   onTap: () {
-                                    
                                     dataService.getNearbyRestaurants(
-                                      distanceController.text == null ? 3000 : distanceController.text,
-                                      "Coffee",//foodController.text, 
-                                      "3",//priceController.text, 
-                                      "3",//ratingController.text, 
+                                      //"5000",
+                                      convertMilesToMeters(distanceController.text).toString(),
+                                      //"Coffee",
+                                      foodController.text, 
+                                      //"3",
+                                      priceController.text.toString(), 
+                                      //"3",
+                                      ratingController.text.toString(), 
                                       currentLat, 
                                       currentLng
                                     ).then(
@@ -383,6 +411,26 @@ class MapViewState extends State<MapView> {
                                       }
                                     );
                                     Navigator.of(context).pop();
+                                  },
+                                ),
+                                loggedIn == null ? new SizedBox() : new CustomButton(
+                                  externalPadding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 10
+                                  ),
+                                  buttonColor: elevatedBackgroundColor,
+                                  shadowColor: Colors.black12,
+                                  blurRadius: 6,
+                                  buttonWidth: 300,
+                                  internalPadding: EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 10
+                                  ),
+                                  label: "Search With Preferences",
+                                  labelColor: primaryColor,
+                                  labelSize: 17,
+                                  onTap: () {
+
                                   },
                                 )
                               ],
@@ -462,7 +510,7 @@ _buildResults(Map item, bool active, Color backgroundColor, Color textColor, Bui
                 new AspectRatio(
                   aspectRatio: 2.0/0.8,
                   child: new Container(
-                    clipBehavior: Clip.antiAlias,
+                    //clipBehavior: Clip.antiAlias,
                     decoration: new BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(

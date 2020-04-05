@@ -135,7 +135,7 @@ class HomePageState extends State<HomePage> {
             ]
           ),
           child: new Container(
-            clipBehavior: Clip.antiAlias,
+            //clipBehavior: Clip.antiAlias,
             child: views[_selectedViewIndex],
             constraints: BoxConstraints.expand(),
             decoration: new BoxDecoration(

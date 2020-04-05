@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodfinderzero/ui/preferences_ui.dart';
 
 class PreferencesItem extends StatelessWidget {
 
@@ -35,19 +36,40 @@ class PreferencesItem extends StatelessWidget {
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 5,
-              horizontal: 10
-            ),
-            child: new Text(
-              label,
-              style: new TextStyle(
-                fontSize: 17,
-                color: backgroundTextColor
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 10
+                ),
+                child: new Text(
+                  label,
+                  style: new TextStyle(
+                    fontSize: 17,
+                    color: backgroundTextColor
+                  ),
+                  textAlign: TextAlign.left,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 10
+                ),
+                child: new GestureDetector(
+                  child: new Text(
+                    "Change",
+                    style: new TextStyle(
+                      fontSize: 15,
+                      color: buttonColor
+                    )
+                  ),
+                  onTap: onTap,
+                ),
+              )
+            ],
           ),
           new SizedBox(
             height: 5,
@@ -56,8 +78,9 @@ class PreferencesItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               new Container(
-                width: MediaQuery.of(context).size.width * .85,
+                width: MediaQuery.of(context).size.width,
                 height: 75,
+                color: Colors.transparent,
                 child: new StreamBuilder(
                   stream: Firestore.instance.collection('users').document(uid).collection(fieldName).snapshots(),
                   builder: (BuildContext context, snapshot) {
@@ -117,43 +140,6 @@ class PreferencesItem extends StatelessWidget {
                   },
                 )
               ),
-              new Container(
-                width: 60,
-                height: 50,
-                decoration: new BoxDecoration(
-                  color: buttonColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    bottomLeft: Radius.circular(20)
-                  ),
-                  boxShadow: [
-                    new BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 6,
-                      offset: Offset.zero
-                    )
-                  ]
-                ),
-                child: new Material(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    bottomLeft: Radius.circular(20)
-                  ),
-                  color: Colors.transparent,
-                  child: new InkWell(
-                    splashColor: Colors.white54,
-                    child: new Center(
-                      child: new Icon(
-                        Icons.add,
-                        size: 40,
-                        color: buttonTextColor
-                      ),
-                    ),
-                    onTap: onTap
-                  ),
-                ),
-              )
             ],
           )
         ],

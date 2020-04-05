@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foodfinderzero/services/data.dart';
+import 'package:foodfinderzero/ui/preferences_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
@@ -83,10 +84,11 @@ class ProfileViewState extends State<ProfileView> {
     Color textColorOnPrimary = appState.getTextColorOnPrimaryColor();
     Color textColor = appState.getTextColor();
     Color elevatedBackgroundColor = appState.getElevatedBackgroundColor();
+    Color backgroundColor = appState.getBackgroundColor();
 
     return new Container(
       constraints: BoxConstraints.expand(),
-      clipBehavior: Clip.antiAlias,
+      //clipBehavior: Clip.antiAlias,
       decoration: new BoxDecoration(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(
@@ -287,7 +289,7 @@ class ProfileViewState extends State<ProfileView> {
                     top: 75,
                     left: 0,
                     child: new Container(
-                      width: MediaQuery.of(context).size.width * (Platform.isIOS ? 0.9 : 0.8),
+                      width: MediaQuery.of(context).size.width,
                       height: 125,
                       decoration: new BoxDecoration(
                         color: primaryColor,
@@ -385,6 +387,33 @@ class ProfileViewState extends State<ProfileView> {
                           new PreferencesItem(
                             label: "Category",
                             fieldName: "foodTypes",
+                            uid: uid,
+                            backgroundColor: elevatedBackgroundColor,
+                            backgroundTextColor: textColor,
+                            textColor: textColor,
+                            buttonColor: primaryColor,
+                            buttonTextColor: textColorOnPrimary,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => new PreferencesView(
+                                    uid: uid,
+                                    label: "Category",
+                                    fieldName: "foodTypes",
+                                    primaryColor: primaryColor,
+                                    textColor: textColor,
+                                    textColorOnPrimary: textColorOnPrimary,
+                                    elevatedBackgroundColor: elevatedBackgroundColor,
+                                    backgroundColor: backgroundColor
+                                  )
+                                )
+                              );
+                            },
+                          ),
+                          new PreferencesItem(
+                            label: "Prices",
+                            fieldName: "prices",
                             uid: uid,
                             backgroundColor: elevatedBackgroundColor,
                             backgroundTextColor: textColor,
