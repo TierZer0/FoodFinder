@@ -228,7 +228,7 @@ class DataService with ChangeNotifier {
 
   getRestaurantDetails(restaurantID) async {
     String baseUrl = 'https://api.yelp.com/v3/businesses/';
-
+    
     String fullUrl = baseUrl + restaurantID;
     var response = await http.get(
       fullUrl,
