@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foodfinder/services/SecretLoader.dart';
@@ -5,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
 
 class DataService with ChangeNotifier {
   final primaryLight = new Color(0xFFEEF1F0);
@@ -116,24 +119,77 @@ class DataService with ChangeNotifier {
     return location;
   }
 
-}
+  // test() {
+  //   api.test();
+  // }
+  
+  getRestaurants(String category, int distance, int price, int rating, double lat, double lng) async {
+    String baseUrl = 'https://api.yelp.com/v3/businesses/search';
+    
+    String fullUrl = baseUrl + 
+    "?latitude=" + lat.toString() +
+    "&longitude=" + lng.toString() +
+    "&categories=restaurants,food" +
+    "&radius=" + distance.toString() +
+    "&term=" + category +
+    "&rating=" + rating.toString() + 
+    "&price=" + price.toString() +
+    "&limit=30";
 
+    return api.searchRestuarants(fullUrl).then(
+      (response) {
+        //print(response);
+        return response;
+      }
+    );
+  }
+
+}
 
 
 
 
 class ApiService {
   Future<Secret> secret = SecretLoader(
-    secretPath: "secrets.json"
+    secretPath: "assets/secrets.json"
   ).load();
 
-  
+  // test() {
+  //   secret.then(
+  //     (value) => {
+  //       print(value.apiKey)
+  //     }
+  //   );
+  // }
+
+  searchRestuarants(String url) async {
+    return secret.then(
+      (value) async {
+          
+        List data;
+
+        var response = await http.get(
+          url,
+          headers: {
+            'Authorization' : 'Bearer ' + value.apiKey
+          }
+        );
+
+        if (response.statusCode == 200) {
+          var result = json.decode(response.body);
+          
+          data = result['businesses'];
+          
+          return data;
+        } else {
+          return null;
+        }
+      }
+    ); 
+  }
 
 }
 final ApiService api = ApiService();
-
-
-
 
 
 

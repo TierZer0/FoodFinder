@@ -26,15 +26,14 @@ class MapViewState extends State<MapView> {
   void initState() {
     super.initState();
     _permission.request();
-
-
+    
     _getLocation().then(
       (location) {
         setState(() {
           lat = location.latitude;
           lng = location.longitude;
           currentLocation = CameraPosition(
-            target: LatLng(
+            target: LatLng( 
               location.latitude,
               location.longitude
             ),

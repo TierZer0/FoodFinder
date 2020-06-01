@@ -58,12 +58,15 @@ class HomePageState extends State<HomePage> {
   String currentPageName = "";
   BuildContext scaffoldContext;
 
-  List list = [
-    "test",
-    "test",
-    "test"
-  ];
+  List list = [];
   final PageController ctrl = PageController(viewportFraction: 0.65);
+  final categoryController = new TextEditingController();
+
+  double searchHeight = 70;
+  double searchWidth = 70;
+  double searchBorderRadius = 40;
+  Color searchBackground;
+  bool searchActive = false;
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<DataService>(context);
@@ -235,219 +238,294 @@ class HomePageState extends State<HomePage> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: currentPage == 0 ? new FloatingActionButton(
-        backgroundColor: buttonColor,
-        elevation: 3,
-        child: new Center(
-          child: Icon(
-            Icons.search,
-            size: 35,
-            color: selectedColor,
-          )
+      floatingActionButton: currentPage == 0 ? new AnimatedContainer(
+        duration: new Duration(
+          milliseconds: 500
         ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: scaffoldContext, 
-            
-            builder: (context) {
-              return new Container(
-                height: MediaQuery.of(context).size.height * .7,
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 0
+        height: !searchActive ? 65 : MediaQuery.of(context).size.height,
+        width: !searchActive ? 65 : MediaQuery.of(context).size.width,
+        decoration: new BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              !searchActive ? 40 : 0
+            )
+          ),
+          boxShadow: [
+            new BoxShadow(
+              blurRadius: 7,
+              color: Colors.black26
+            )
+          ],
+          color: !searchActive ? buttonColor : elevatedBackgroundColor
+        ),
+        child: !searchActive ? new Material(
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              !searchActive ? 40 : 0
+            )
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: new InkWell(
+            child: new Center(
+              child: new Icon(
+                Icons.search,
+                color: selectedColor,
+                size: 40
+              )
+            ),
+            onTap: () {
+              setState(() {
+                searchActive = true;
+              });
+            },
+          )
+        ) 
+      : new SafeArea(
+          top: true,
+          child: new Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 20,
+              horizontal: 25
+            ),
+            child: new ListView(
+              physics: NeverScrollableScrollPhysics(),
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                new SizedBox(
+                  height: 60
                 ),
-                decoration: new BoxDecoration(
-                  color: elevatedBackgroundColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)
+                new Text(
+                  "Search For Restaurants",
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    fontSize: 20,
+                    color: selectedColor
                   )
                 ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 30
+                new Divider(
+                  color: textColor,
+                  thickness: 0.5,
+                  height: 40,
                 ),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    new Text(
-                      "Search For Restaurants",
-                      textAlign: TextAlign.center,
-                      style: new TextStyle(
-                        color: textColor,
-                        fontSize: 18
-                      ),
-                    ),
-                    new Divider(
-                      thickness: 0.5,
+                new Text(
+                  "Type of Food",
+                  style: new TextStyle(
+                    color: textColor,
+                    fontSize: 16
+                  )
+                ),
+                new Container(
+                  decoration: new BoxDecoration(
+                    border: Border.all(
                       color: textColor,
-                      height: 40,
+                      width: 0.5
                     ),
-                    new Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        new Text(
-                          "Type Of Food",
-                          style: new TextStyle(
-                            color: textColor,
-                            fontSize: 16
-                          ),
-                        ),
-                        new Container(
-                          decoration: new BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 0.5
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(
-                                10
-                              )
-                            )
-                          ),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 25,
-                            vertical: 5
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 5
-                            ),
-                            child: new TextField(
-                              controller: null,
-                              cursorColor: selectedColor, 
-                              style: new TextStyle(
-                                fontSize: 17
-                              ),                           
-                              decoration: new InputDecoration(
-                                focusColor: selectedColor,
-                                border: InputBorder.none
-                              ),
-                            ),
-                          ),
-                        ),
-                        new SizedBox(
-                          height: 30
-                        ),
-                        new Text(
-                          "Search Distance",
-                          style: new TextStyle(
-                            color: textColor,
-                            fontSize: 16
-                          ),
-                        ),
-                        new StatefulBuilder(
-                          builder: (context, setState) {
-                            return new Slider(
-                              value: distance,
-                              onChanged: (value) {
-                                setState(() {
-                                  distance = value;
-                                });
-                              },
-                              min: 100,
-                              max: 5000,
-                              divisions: 100,
-                              label: convertToMiles(distance) + " Miles",
-                              activeColor: selectedColor,
-                              inactiveColor: Colors.black26,
-                            );
-                          }
-                        ),
-                        new SizedBox(
-                          height: 20
-                        ),
-                        new Text(
-                          "Price",
-                          style: new TextStyle(
-                            color: textColor,
-                            fontSize: 16
-                          ),
-                        ),
-                        new StatefulBuilder(
-                          builder: (context, setState) {
-                            return new Slider(
-                              value: price,
-                              onChanged: (value) {
-                                setState(() {
-                                  price = value;
-                                });
-                              },
-                              min: 1,
-                              max: 4,
-                              divisions: 3,
-                              label: price.round().toString(),
-                              activeColor: selectedColor,
-                              inactiveColor: Colors.black26,
-                            );
-                          }
-                        ),
-                        new SizedBox(
-                          height: 20,
-                        ),
-                        new Text(
-                          "Rating",
-                          style: new TextStyle(
-                            color: textColor,
-                            fontSize: 16
-                          )
-                        ),
-                        new StatefulBuilder(
-                          builder: (context, setState) {
-                            return new Slider(
-                              value: rating,
-                              onChanged: (value) {
-                                setState(() {
-                                  rating = value;
-                                });
-                              },
-                              min: 1,
-                              max: 5,
-                              divisions: 4,
-                              label: rating.round().toString(),
-                              activeColor: selectedColor,
-                              inactiveColor: Colors.black26,
-                            );
-                          },
-                        ),
-                        new SizedBox(
-                          height: 30,
-                        ),
-                        new CustomButton(
-                          externalPadding: EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 5
-                          ),
-                          internalPadding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10
-                          ),
-                          backgroundColor: buttonColor,
-                          borderColor: Colors.transparent,
-                          fontSize: 17,
-                          textColor: textColor,
-                          label: "Search",
-                          blurRadius: 5,
-                          onTap: () {
-
-                          },
-                        )
-                      ],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(
+                        10
+                      )
                     )
-                  ],
+                  ),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 5
+                  ),
+                  child: new TextField(
+                    controller: categoryController,
+                    cursorColor: selectedColor,
+                    style: new TextStyle(
+                      fontSize: 17
+                    ),
+                    decoration: new InputDecoration(
+                      focusColor: selectedColor,
+                      border: InputBorder.none
+                    )
+                  ),
                 ),
-              );
-            }
-          );
-        },
-      ) : null,
+                new SizedBox(
+                  height: 30
+                ),
+                new SliderInput(
+                  label: "Search Distance",
+                  onChanged: (value) {
+                    setState(() {
+                      distance = value;
+                    });
+                  },
+                  value: distance,
+                  textColor: textColor,
+                  sliderLabel: convertToMiles(distance) + " Miles",
+                  min: 100,
+                  max: 5000,
+                  divisions: 100,
+                  activeColor: selectedColor,
+                ),
+                new SizedBox(
+                  height: 20,
+                ),
+                new SliderInput(
+                  label: "Price",
+                  onChanged: (value) {
+                    setState(() {
+                      price = value;
+                    });
+                  },
+                  value: price,
+                  sliderLabel: price.round().toString(),
+                  activeColor: selectedColor,
+                  textColor: textColor,
+                  min: 1,
+                  max: 4,
+                  divisions: 3,
+                ),
+                new SizedBox(
+                  height: 20,
+                ),
+                new SliderInput(
+                  label: "Rating",
+                  sliderLabel: rating.round().toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      rating = value;
+                    });
+                  },
+                  value: rating,
+                  activeColor: selectedColor,
+                  textColor: textColor,
+                  min: 1,
+                  max: 5,
+                  divisions: 4
+                ),
+                new CustomButton(
+                  externalPadding: EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 15
+                  ),
+                  internalPadding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10
+                  ),
+                  backgroundColor: buttonColor,
+                  borderColor: Colors.transparent,
+                  fontSize: 19,
+                  textColor: selectedColor,
+                  label: "Search",
+                  blurRadius: 5,
+                  onTap: () {
+                    setState(() {
+                      appState.getRestaurants(
+                        categoryController.text,
+                        distance.round(),
+                        price.round(),
+                        rating.round(),
+                        currentLocation['lat'],
+                        currentLocation['lng']
+                      ).then(
+                        (response) {
+                          //print(response);
+                          setState(() {
+                            list = response;
+                          });
+                        }
+                      );
+                      searchActive = false;
+                    });
+                  },
+                ),
+                new CustomButton(
+                  externalPadding: EdgeInsets.symmetric(
+                    horizontal: 45,
+                    vertical: 15
+                  ),
+                  internalPadding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10
+                  ),
+                  backgroundColor: elevatedBackgroundColor,
+                  borderColor: buttonColor,
+                  fontSize: 18,
+                  textColor: textColor,
+                  label: "Cancel",
+                  blurRadius: 0,
+                  onTap: () {
+                    setState(() {
+                      searchActive = false;
+                    });
+                  },
+                )
+              ],
+            ),
+          ),
+      )
+      ): null,
       
     );
   }
 }
 
-Widget _buildResults(String item, bool active, Color backgroundColor, Color textColor, BuildContext context) {
+class SliderInput extends StatelessWidget {
+
+  String label;
+  String sliderLabel;
+  Function onChanged;
+  Color textColor;
+  Color activeColor;
+  double value;
+  double min;
+  double max;
+  int divisions;
+
+  SliderInput(
+    {
+      this.label,
+      this.onChanged,
+      this.sliderLabel,
+      this.textColor,
+      this.activeColor,
+      this.value,
+      this.min,
+      this.max,
+      this.divisions
+    }
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          new Text(
+            label,
+            style: new TextStyle(
+              color: textColor,
+              fontSize: 16
+            )
+          ),
+          new StatefulBuilder(
+            builder: (context, setState) {
+              return new Slider(
+                value: value,
+                onChanged: onChanged,
+                min: min,
+                max: max,
+                divisions: divisions,
+                label: sliderLabel,
+                activeColor: activeColor,
+                inactiveColor: Colors.black26,
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
+
+Widget _buildResults(Map item, bool active, Color backgroundColor, Color textColor, BuildContext context) {
   final double blur = active ? 15 : 0;
   final double opacity = active ? 1 : 0;
   final double top = active ? 25 : 50;
@@ -479,6 +557,10 @@ Widget _buildResults(String item, bool active, Color backgroundColor, Color text
       left: left,
       right: right
     ),
+    padding: EdgeInsets.symmetric(
+      vertical: 0,
+      horizontal: 0
+    ),
     child: new Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.all(
@@ -488,7 +570,27 @@ Widget _buildResults(String item, bool active, Color backgroundColor, Color text
       ),
       child: new InkWell(
         child: new Container(
-
+          child: new ListView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              new Container(
+                height: 100,
+                width: 100,
+                child: new Image.network(
+                  item['image_url'],
+                ),
+              ),
+              new Text(
+                item['name'],
+                style: new TextStyle(
+                  fontSize: 20
+                )
+              ),
+              new Text(
+                item['name']
+              )
+            ],
+          )
         ),
         onTap: () {
 
